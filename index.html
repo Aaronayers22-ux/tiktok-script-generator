@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viral TikTok Script Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Viral TikTok Script Generator</h1>
+            <p class="subtitle">Craft scroll-stopping scripts in seconds</p>
+        </header>
+
+        <main>
+            <section class="form-section">
+                <div class="form-group">
+                    <label for="topic">What's your video about?</label>
+                    <input type="text" id="topic" placeholder="e.g., morning routine, productivity tips, workout hacks" />
+                </div>
+
+                <div class="form-group">
+                    <label for="niche">Niche</label>
+                    <select id="niche">
+                        <option value="lifestyle">Lifestyle</option>
+                        <option value="fitness">Fitness</option>
+                        <option value="business">Business / Money</option>
+                        <option value="beauty">Beauty</option>
+                        <option value="food">Food</option>
+                        <option value="tech">Tech</option>
+                        <option value="comedy">Comedy</option>
+                        <option value="education">Education</option>
+                        <option value="travel">Travel</option>
+                        <option value="fashion">Fashion</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tone">Tone</label>
+                    <select id="tone">
+                        <option value="energetic">Energetic & Hype</option>
+                        <option value="storytelling">Storytelling</option>
+                        <option value="educational">Educational</option>
+                        <option value="funny">Funny / Relatable</option>
+                        <option value="dramatic">Dramatic / Cinematic</option>
+                        <option value="aesthetic">Aesthetic / Calm</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="duration">Video Length</label>
+                    <select id="duration">
+                        <option value="15">15 seconds</option>
+                        <option value="30" selected>30 seconds</option>
+                        <option value="60">60 seconds</option>
+                        <option value="90">90 seconds</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="hookStyle">Hook Style</label>
+                    <select id="hookStyle">
+                        <option value="question">Curiosity Question</option>
+                        <option value="shocking">Shocking Statement</option>
+                        <option value="pov">POV / Storytime</option>
+                        <option value="listicle">Listicle ("3 things...")</option>
+                        <option value="controversial">Controversial Take</option>
+                        <option value="transformation">Before / After</option>
+                    </select>
+                </div>
+
+                <button id="generateBtn" class="generate-btn">Generate Viral Script</button>
+            </section>
+
+            <section class="output-section" id="outputSection">
+                <div class="output-header">
+                    <h2>Your Script</h2>
+                    <div class="output-actions">
+                        <button id="copyBtn" class="action-btn">Copy</button>
+                        <button id="downloadBtn" class="action-btn">Download</button>
+                        <button id="regenerateBtn" class="action-btn">Regenerate</button>
+                    </div>
+                </div>
+
+                <div class="script-output">
+                    <div class="script-block">
+                        <h3>Hook <span class="time-badge">0-3s</span></h3>
+                        <p id="hookText"></p>
+                    </div>
+
+                    <div class="script-block">
+                        <h3>Body <span class="time-badge" id="bodyBadge">3-25s</span></h3>
+                        <p id="bodyText"></p>
+                    </div>
+
+                    <div class="script-block">
+                        <h3>Call to Action <span class="time-badge" id="ctaBadge">25-30s</span></h3>
+                        <p id="ctaText"></p>
+                    </div>
+
+                    <div class="script-block extras">
+                        <h3>Trending Hashtags</h3>
+                        <p id="hashtagsText" class="hashtags"></p>
+                    </div>
+
+                    <div class="script-block extras">
+                        <h3>Sound / Music Vibe</h3>
+                        <p id="soundText"></p>
+                    </div>
+
+                    <div class="script-block extras">
+                        <h3>Visual Cues</h3>
+                        <p id="visualText"></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Built for creators who want to go viral.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
