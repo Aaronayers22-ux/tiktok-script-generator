@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-        return res.status(500).json({ error: 'AI is not configured.' });
+        return res.status(500).json({ error: 'AI is not configured. Please contact the site owner.' });
     }
 
     const { topic, niche, tone, duration, hookStyle } = req.body || {};
@@ -23,7 +23,9 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Invalid duration' });
     }
 
+    // Basic length cap to prevent prompt injection / abuse
     const safeTopic = String(topic).slice(0, 200);
+
     const hookEnd = 3;
     const ctaStart = Math.max(durationNum - 5, hookEnd + 5);
 
@@ -47,16 +49,18 @@ INPUTS
 - Hook style: ${hookStyle}
 
 GUIDELINES
-- hook (0-${hookEnd}s): A scroll-stopping opening in the "${hookStyle}" pattern. Punchy, specific, max 1-2 sentences.
-- body (${hookEnd}-${ctaStart}s): The main content in a ${tone} tone, fleshed out for a ${durationNum}-second video. Specific, vivid, concrete. Use the topic directly.
-- cta (${ctaStart}-${durationNum}s): A call to action that drives comments, follows, saves, or shares. Casual and direct.
-- hashtags: Exactly 7 trending and niche-relevant TikTok hashtags. Lowercase. Space-separated. Each starts with #.
-- sound: Recommend ONE specific real-world TikTok sound or song that matches the tone.
-- visual: 2-3 sentences of concrete shot list and editing direction.
+- hook (0-${hookEnd}s): A scroll-stopping opening in the "${hookStyle}" pattern. Punchy, specific, max 1-2 sentences. Should make the viewer NEED to keep watching.
+- body (${hookEnd}-${ctaStart}s): The main content, delivered in a ${tone} tone, fully fleshed out for a ${durationNum}-second video. Be specific, vivid, and concrete. Avoid filler. Use the topic concretely. This should feel like a real creator talking, not generic advice.
+- cta (${ctaStart}-${durationNum}s): A call to action that drives comments, follows, saves, or shares. Casual and direct. Reference the topic if natural.
+- hashtags: Exactly 7 trending and niche-relevant TikTok hashtags. All lowercase. Each starts with #. Space-separated. Mix broad (#fyp) and niche-specific.
+- sound: Recommend ONE specific real-world TikTok sound, song name, or audio vibe that matches the tone. Be concrete (artist + track when applicable).
+- visual: A concrete shot list and editing direction — cuts, zooms, lighting, text overlays, B-roll. 2-3 sentences of clear visual instructions.
+
+Make this script feel like it was written by someone who has gone viral before. Specific over generic. Bold over safe.
 
 Return ONLY the JSON object.`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     try {
         const aiResponse = await fetch(url, {
@@ -83,13 +87,24 @@ Return ONLY the JSON object.`;
         const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (!text) {
+            console.error('Empty AI response:', JSON.stringify(data).slice(0, 500));
             return res.status(502).json({ error: 'AI did not return a result. Please try again.' });
         }
 
         let script;
         try {
-            script = JSON.parse(text);
+            // Strip markdown code fences if Gemini wraps the JSON
+            let cleaned = text.trim();
+            cleaned = cleaned.replace(/^```(?:json)?\s*\n?/i, '');
+            cleaned = cleaned.replace(/\n?\s*```\s*$/i, '');
+            // Fallback: extract first {...} block if there's still extra text
+            if (!cleaned.startsWith('{')) {
+                const match = cleaned.match(/\{[\s\S]*\}/);
+                if (match) cleaned = match[0];
+            }
+            script = JSON.parse(cleaned);
         } catch (e) {
+            console.error('Failed to parse AI JSON. Raw text:', text.slice(0, 800));
             return res.status(502).json({ error: 'AI returned malformed output. Please try again.' });
         }
 
