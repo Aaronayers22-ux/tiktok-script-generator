@@ -60,7 +60,7 @@ Make this script feel like it was written by someone who has gone viral before. 
 
 Return ONLY the JSON object.`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     try {
         const aiResponse = await fetch(url, {
